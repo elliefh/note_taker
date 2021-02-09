@@ -1,16 +1,23 @@
+// Dependencies
+// =============================================================
 const { notStrictEqual } = require("assert");
 var express = require("express");
 var fs = require("fs");
+var path = require("path");
 
+// Sets up the Express App
+// =============================================================
 var app = express();
 var PORT = process.env.PORT || 3000;
 
 // Sets up the Express app to handle data parsing
+// =============================================================
 app.use(express.urlencoded({extended:true}));
 app.use(express.json());
-
 app.use(express.static('public'));
 
+// Routes
+// =============================================================
 app.get("/api/notes", function(req,res) {
    // Use the fs module to read the file
    // Parse the file contents with JSON.parse() to the real data
@@ -48,6 +55,8 @@ app.get("*", function(req,res) {
     res.sendFile(public/index.html)
 });
 
+// Starts the server to begin listening
+// =============================================================
 app.listen(PORT, function() {
     console.log("App listening on PORT " + PORT);
 });
