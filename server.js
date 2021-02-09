@@ -25,7 +25,7 @@ app.get("/api/notes", function(req,res) {
        // Parse the file contents with JSON.parse() to the real data
        let dbNotes = JSON.parse(data);
        // Return and send the parsed data back to the client with res.json()
-       return res.JSON(dbNotes);
+    //    return res.JSON(dbNotes);
    });
 });
 
@@ -62,7 +62,7 @@ app.get("/notes", function(req, res) {
     res.sendFile(path.join(__dirname, "./public/notes.html"));
 });
 
-app.get("*", function(req, res) {
+app.get("/", function(req, res) {
     // Return index.html contents
     res.sendFile(path.join(__dirname, "./public/index.html"));
 });
