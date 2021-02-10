@@ -60,18 +60,17 @@ app.delete("/api/notes/:id", function(req, res) {
     // Read the db.json file via fs module
     fs.readFile("./db/db.json", "utf8", function(err, data) {
         if (err) throw err;
+        // Parse the file contents with JSON.parse() to the real data
         let dbNotes = JSON.parse(data);
+        // Use the Array.filter() method to filter out the matching element
         dbNotes = dbNotes.filter( element => element.id !== req.params.id);
         fs.writeFile("./db/db.json", JSON.stringify(dbNotes), function(err) {
             if (err) throw err;
+            // Return any time of success message
             res.sendStatus(200);
         });
     });
-    // Parse the file contents with JSON.parse() to the real data
-    // Option A: Find matching index using Array.findIndex()
-    // Option B: Remove target element using Array.splice()
-    // Option C: Use the Array.filter() method to filter out the matching element
-    // Return any time of success message
+    
 });
 
 // HTML Routes
