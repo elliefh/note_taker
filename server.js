@@ -1,9 +1,11 @@
 // Dependencies
 // =============================================================
 const { notStrictEqual } = require("assert");
-var express = require("express");
-var fs = require("fs");
-var path = require("path");
+const express = require("express");
+const fs = require("fs");
+const path = require("path");
+const shortid = require('shortid');
+const { Z_ERRNO } = require("zlib");
 
 // Sets up the Express App
 // =============================================================
@@ -21,39 +23,56 @@ app.use(express.static('public'));
 app.get("/api/notes", function(req,res) {
    // Read the db.json file via fs module
    fs.readFile("./db/db.json", "utf8", function(err, data) {
-       if (err) throw error;
+       if (err) throw err;
        // Parse the file contents with JSON.parse() to the real data
        let dbNotes = JSON.parse(data);
        // Return and send the parsed data back to the client with res.json()
-    //    return res.JSON(dbNotes);
+       return res.json(dbNotes);
    });
 });
 
-// app.post("/api/notes", function(req, res) {
-//     // Access the POSTed data in 'req.body'
-//     let newNote = req.body;
-//     // Read the db.json file via fs module
-//     fs.readFile("./db/db.json", "utf8", function(err, data) {
-//         if (err) throw error;
-//         // Parse the file contents with JSON.parse() to the real data
-//         let dbNotes = JSON.parse(data);
-//         // Push 'req.body' to the array list
-//         // JSON.stringify() the array list back into a JSON string
-//         // Save content back to the 'db.json' with the 'fs' module
-//     });    
-// });
+app.post("/api/notes", function(req, res) {
+    // Access the POSTed data in 'req.body'
+    let newNote = { 
+        title: req.body.title,
+        text: req.body.text,
+        id: shortid.generate()
+    };
+    console.log(newNote);
+    // Read the db.json file via fs module
+    fs.readFile("./db/db.json", "utf8", function(err, data) {
+        if (err) throw err;
+        // Parse the file contents with JSON.parse() to the real data
+        let dbNotes = JSON.parse(data);
+        // Push 'req.body' to the array list
+        dbNotes.push(newNote);
+        // Save content back to the 'db.json' with the 'fs' module
+        // JSON.stringify() the array list back into a JSON string
+        fs.writeFile("./db/db.json", JSON.stringify(dbNotes), function(err) {
+            if (err) throw err;
+            res.json(dbNotes);
+        });
+    });    
+});
 
-// app.delete("/api/notes:id", function(req, res) {
-//     // Access :id from 'req.params.id'
-//     // Read the db.json file via fs module
-//     // Parse the file contents with JSON.parse() to the real data
-//     // Option A: Find matching index using Array.findIndex()
-//     // Option B: Remove target element using Array.splice()
-//     // Option C: Use the Array.filter() method to filter out the matching element
-//     myArray = myArray.filter( element => element.id !== req.params.id);
-
-//     // Return any time of success message
-// });
+app.delete("/api/notes/:id", function(req, res) {
+    // Access :id from 'req.params.id'
+    // Read the db.json file via fs module
+    fs.readFile("./db/db.json", "utf8", function(err, data) {
+        if (err) throw err;
+        let dbNotes = JSON.parse(data);
+        dbNotes = dbNotes.filter( element => element.id !== req.params.id);
+        fs.writeFile("./db/db.json", JSON.stringify(dbNotes), function(err) {
+            if (err) throw err;
+            res.sendStatus(200);
+        });
+    });
+    // Parse the file contents with JSON.parse() to the real data
+    // Option A: Find matching index using Array.findIndex()
+    // Option B: Remove target element using Array.splice()
+    // Option C: Use the Array.filter() method to filter out the matching element
+    // Return any time of success message
+});
 
 // HTML Routes
 // =============================================================
