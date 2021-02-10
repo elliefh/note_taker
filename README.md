@@ -34,10 +34,6 @@ Application should allow users to view previously saved notes.
 Application should allow users to delete previously saved notes.
 ```
 
-Please see below for a walkthrough of the application:
-
-![image]()
-
 ## Links
 - [Repository](https://github.com/elliefh/note_taker)
 - [Deployed](https://note-taker-efh.herokuapp.com)
